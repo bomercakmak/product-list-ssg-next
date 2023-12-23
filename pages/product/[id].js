@@ -2,7 +2,18 @@ import React from "react";
 import Head from "next/head";
 import styles from "../../styles/ProductDetail.module.css";
 
-export async function getServerSideProps({ params }) {
+export async function getStaticPaths() {
+  const resp = await fetch("https://fakestoreapi.com/products");
+  const prodcuts = await resp.json();
+
+  return {
+    paths: prodcuts.map((product) => ({
+      params: { id: product.id.toString() },
+    })),
+    fallback: false,
+  };
+}
+export async function getStaticProps({ params }) {
   const resp = await fetch(`https://fakestoreapi.com/products/${params.id}`);
   const product = await resp.json();
 
